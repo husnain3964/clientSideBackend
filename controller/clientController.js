@@ -1,5 +1,7 @@
 const validator = require("validator");
 const UserModel = require("../models/users");
+const cloudinary = require("../config/cloudinary")
+
 const createClient = async (req, res) => {
   try {
     const {
@@ -24,9 +26,21 @@ const createClient = async (req, res) => {
       country,
       postalCode,
       birthDate,
-      imageUrl,
-    } = req.body;
-    if (
+         } = req.body;
+    
+       let imageUrl=null;
+
+       if(req.file){
+
+       const uploaded = await cloudinary.uploader.upload(req.file.path , {
+          folder :"client",
+        })
+
+        imageUrl   = uploaded.secure_url
+       }
+
+
+        if (
       !role ||
       !name ||
       !fatherName ||
@@ -45,8 +59,8 @@ const createClient = async (req, res) => {
       !city ||
       !country ||
       !postalCode ||
-      !birthDate ||
-      !imageUrl
+      !birthDate 
+     
     ) {
       return res.status(400).json({
         message: "All field required",

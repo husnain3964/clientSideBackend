@@ -3,10 +3,13 @@ const {createClient} =require("../controller/clientController")
 const {getAllClient} =require("../controller/clientController")
 const {getClientByEmail}  =require("../controller/clientController")
 const {clientDeleteById}  =require("../controller/clientController")
+
+const upload = require("../middleware/upload")
+
 const router=express.Router()
 
 
-router.post("/createClient" , createClient)
+router.post("/createClient" ,upload.single("imagefile") ,createClient)
 router.get("/getAllClient",getAllClient )
 router.get("/getclientByEmail",getClientByEmail )
 router.get("/clientDeleteById/:id",clientDeleteById )
