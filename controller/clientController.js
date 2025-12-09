@@ -13,6 +13,7 @@ const createClient = async (req, res) => {
       religion,
       issueDate,
       email,
+      cnic,
       Age,
       services,
       servicesType,
@@ -43,24 +44,12 @@ const createClient = async (req, res) => {
         if (
       !role ||
       !name ||
-      !fatherName ||
-      !motherName ||
-      !siblings ||
-      !religion ||
       !email ||
-      !Age ||
       !services ||
       !servicesType ||
       !Gender ||
       !contact ||
-      !emergencyContactNumber ||
-      !relativeContactNumber ||
-      !permenentAddress ||
-      !city ||
-      !country ||
-      !postalCode ||
-      !birthDate 
-     
+      !cnic
     ) {
       return res.status(400).json({
         message: "All field required",
@@ -78,6 +67,7 @@ const createClient = async (req, res) => {
 
     const client = await UserModel.create({
       role,
+      cnic,
       name,
       fatherName,
       motherName,
@@ -165,24 +155,18 @@ return res.status(200).json({
 
 const clientDeleteById= async (req,res)=>{
   try {
-      const  gettingClientID =  req.params.Id 
+      const  gettingClientID =  req.params.id
       
       if(!gettingClientID){
         return res.status(404).json({
-          message:"client not found",
+          message:"id not found",
 
         })
       }
  
 
       const findClient = await UserModel.findById(gettingClientID)
-      
-          if (!client) {
-      return res.status(404).json({
-        message: "Client not found",
-        data: null
-      });
-    }
+  
       
       if(!findClient?.role=="client"){
         return res.status(404).json({

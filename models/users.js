@@ -66,6 +66,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: false,
     },
+    cnic: {
+      type: String,
+      require: false,
+    },
 
     siblings: {
       type: String,
