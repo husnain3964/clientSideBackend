@@ -1,6 +1,6 @@
 const validator = require("validator");
 const UserModel = require("../models/users");
-const cloudinary = require("../config/cloudinary")
+const cloudinary = require("../config/cloudinary");
 
 const createClient = async (req, res) => {
   try {
@@ -9,15 +9,10 @@ const createClient = async (req, res) => {
       name,
       fatherName,
       motherName,
-      siblings,
       religion,
-      issueDate,
       email,
       cnic,
       Age,
-      services,
-      servicesType,
-      expireDate,
       Gender,
       contact,
       emergencyContactNumber,
@@ -27,29 +22,35 @@ const createClient = async (req, res) => {
       country,
       postalCode,
       birthDate,
-         } = req.body;
-    
-       let imageUrl=null;
+    } = req.body;
 
-       if(req.file){
+    let facePicture = null;
 
-       const uploaded = await cloudinary.uploader.upload(req.file.path , {
-          folder :"client",
-        })
+    if (req.file) {
+      const uploaded = await cloudinary.uploader.upload(req.file.path, {
+        folder: "client",
+      });
 
-        imageUrl   = uploaded.secure_url
-       }
+      facePicture = uploaded.secure_url;
+    }
 
-
-        if (
+    if (
       !role ||
       !name ||
       !email ||
-      !services ||
-      !servicesType ||
+      !fatherName ||
+      !motherName ||
+      !religion ||
       !Gender ||
       !contact ||
-      !cnic
+      !cnic ||
+      !Age ||
+      !emergencyContactNumber ||
+      !permenentAddress ||
+      !city ||
+      !country ||
+      !postalCode ||
+      !birthDate
     ) {
       return res.status(400).json({
         message: "All field required",
@@ -71,24 +72,18 @@ const createClient = async (req, res) => {
       name,
       fatherName,
       motherName,
-      siblings,
       religion,
-      issueDate,
       email,
       Age,
-      services,
-      servicesType,
-      expireDate,
       Gender,
       contact,
       emergencyContactNumber,
-      relativeContactNumber,
       permenentAddress,
       city,
       country,
       postalCode,
       birthDate,
-      imageUrl,
+      facePicture,
     });
     return res.status(200).json({
       message: "client date received",
@@ -136,11 +131,10 @@ const getClientByEmail = async (req, res) => {
       });
     }
 
-return res.status(200).json({
-  message:"success",
-  data:clientByEmail
-})
-
+    return res.status(200).json({
+      message: "success",
+      data: clientByEmail,
+    });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
@@ -149,55 +143,45 @@ return res.status(200).json({
   }
 };
 
-
-
-
-
-const clientDeleteById= async (req,res)=>{
+const clientDeleteById = async (req, res) => {
   try {
-      const  gettingClientID =  req.params.id
-      
-      if(!gettingClientID){
-        return res.status(404).json({
-          message:"id not found",
+    const gettingClientID = req.params.id;
 
-        })
-      }
- 
+    if (!gettingClientID) {
+      return res.status(404).json({
+        message: "id not found",
+      });
+    }
 
-      const findClient = await UserModel.findById(gettingClientID)
-  
-      
-      if(!findClient?.role=="client"){
-        return res.status(404).json({
-          message:"this id is not for client"
-        })
+    const findClient = await UserModel.findById(gettingClientID);
 
-      }
-      const deleteClient = await UserModel.findByIdAndDelete(findClient)
+    if (!findClient?.role == "client") {
+      return res.status(404).json({
+        message: "this id is not for client",
+      });
+    }
+    const deleteClient = await UserModel.findByIdAndDelete(findClient);
 
-      return res.status(200).json({
-        message:"deleted",
-        data:deleteClient
-      })
+    return res.status(200).json({
+      message: "deleted",
+      data: deleteClient,
+    });
 
-      
-
-      return res.status(200).json({
-        message:"deleted client successfully",
-        data:deleteClient
-
-      })
-
-
+    return res.status(200).json({
+      message: "deleted client successfully",
+      data: deleteClient,
+    });
   } catch (error) {
     return res.status(400).json({
-      message:'something wrong',
-      data:null
-    })
-
-
+      message: "something wrong",
+      data: null,
+    });
   }
-}
+};
 
-module.exports = { createClient, getAllClient, getClientByEmail, clientDeleteById };
+module.exports = {
+  createClient,
+  getAllClient,
+  getClientByEmail,
+  clientDeleteById,
+};

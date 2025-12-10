@@ -33,23 +33,8 @@ const userSchema = new mongoose.Schema(
       },
     },
  
-    services: {
-      type: String,
-      enum: [
-        "Passport",
-        "CNIC",
-        "SNIC",
-        "Bform",
-        "FRC",
-        "Driving Licence",
-        "Arms Licence",
-      ],
-    },
+   
 
-    servicesType: {
-      type: "string",
-      enum: ["urgent", "normal"],
-    },
     // for client Side detail
 
     Age: {
@@ -71,25 +56,14 @@ const userSchema = new mongoose.Schema(
       require: false,
     },
 
-    siblings: {
-      type: String,
-      require: false,
-    },
 
     religion: {
       type: String,
       require: false,
     },
 
-    issueDate: {
-      type: String,
-      require: false,
-    },
-
-    expireDate: {
-      type: String,
-      require: false,
-    },
+  
+   
     Gender: {
       type: String,
       enum: ["male", "female"],
@@ -103,10 +77,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       require: false,
     },
-    relativeContactNumber: {
-      type: String,
-      require: false,
-    },
+   
 
     permenentAddress: {
       type: String,
@@ -131,7 +102,7 @@ const userSchema = new mongoose.Schema(
       require:false,
     },
 
-    imageUrl: {
+    facePicture: {
       type: String,
       require: false,
     },
