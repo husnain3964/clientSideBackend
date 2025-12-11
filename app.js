@@ -7,6 +7,7 @@
     const productRouter = require("./router/productRouter");
     const userRouter = require("./router/userRouter");
     const clientRouter  =require("./router/clientRouter")
+    const serviceRouter =require('./router/serviceRouter')
     
       // const chatRouter = require("./router/chatRouter");
       // const messageRouter = require("./router/messageRouter");
@@ -39,7 +40,7 @@
     // app.use("/product", productRouter);
     app.use("/users", userRouter);
     app.use("/client" ,clientRouter )
-  
+    app.use("/services" ,serviceRouter)
     // app.use("/chats", chatRouter);
     // app.use("/messages", messageRouter);
     // app.use("/notifications", notificationRouter);

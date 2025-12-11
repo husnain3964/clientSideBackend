@@ -6,13 +6,17 @@ const {clientDeleteById}  =require("../controller/clientController")
 
 const upload = require("../middleware/upload")
 
-const router=express.Router()
+const router = express.Router()
 
 
 router.post("/createClient" ,upload.single("facePicture") ,createClient)
 router.get("/getAllClient",getAllClient )
 router.get("/getclientByEmail",getClientByEmail )
 router.get("/clientDeleteById/:id",clientDeleteById )
+
+
+
+
 
 
 module.exports =router
