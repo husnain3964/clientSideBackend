@@ -5,7 +5,7 @@ const  cnicSchema=new mongoose.Schema({
 
     clientID:{
      type:mongoose.Schema.Types.ObjectId,
-     ref:"client",
+     ref:"Users",
    
     },
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   createCnic,
+  getAllClientWithCnic,
 } = require("../controller/servicesController/cnicController");
 
 const upload = require("../middleware/upload");
@@ -12,8 +13,11 @@ router.post(
   upload.fields([
     { name: "frontPicture", maxCount: 1 },
     { name: "backPicture", maxCount: 1 },
+
   ]),
   createCnic
 );
+
+router.get("/getAllCnic" ,getAllClientWithCnic)
 
 module.exports = router;
