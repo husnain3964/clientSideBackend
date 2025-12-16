@@ -1,6 +1,8 @@
-    const cnicModel = require("../../models/cnic")
+
+const cnicModel = require("../../models/cnic")
 
     const cloudinary = require("../../config/cloudinary")
+const UserModel = require("../../models/users")
 
 
     const createCnic= async(req, res) =>{
@@ -69,7 +71,7 @@
 
 
 
-    const   getAllClientWithCnic =async (req , res)=>{
+    const   getAllClientWithCnic = async (req , res)=>{
 
     try {
         
@@ -109,20 +111,58 @@
 
 
 const getCnicClientByCnicNumber =  async (req  , res)=>{
-
-    const {cnicNumber} =  req.body 
-    if(!cnicNumber){
+try {
+    
+    const {cnic} =  req.body 
+    if(!cnic){
         return res.status(400).json({
             success:false,
             message:"cnic number required"
         })
     } 
 
+const user  = await  UserModel.findOne({cnic})
 
-    const gettingClientData =  await cnicModel.findOne(cnicNumber).populate("clientID")
+if(!user){
+    return res.status(400).json({
+        message:"client not found with this cnic number",
+        data:null,
+        success:false
+
+    })
+}
 
 
 
+const cnicData = await cnicModel.findOne({clientID : user._id}).populate("clientID")
+
+if(!cnicData){
+    return res.status(400).json({
+        success: false,
+        data:null,
+        message:"Data not found"
+    })
+}
+
+
+
+return res.status(200).json({
+    success:true,
+    message:"complete client data   received",
+    data:cnicData,
+
+})
+
+
+} catch (error) {
+    
+     res.status(500).json({
+    success:false,
+    message:error.message,
+    data:null,
+
+})
+}
 
 }
 

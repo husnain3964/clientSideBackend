@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createCnic,
   getAllClientWithCnic,
+  getCnicClientByCnicNumber
 } = require("../controller/servicesController/cnicController");
 
 const upload = require("../middleware/upload");
@@ -19,5 +20,6 @@ router.post(
 );
 
 router.get("/getAllCnic" ,getAllClientWithCnic)
+router.post("/getClientCnicNumber" ,getCnicClientByCnicNumber)
 
 module.exports = router;
