@@ -2,24 +2,49 @@ const express = require("express");
 const {
   createCnic,
   getAllClientWithCnic,
-  getCnicClientByCnicNumber
+  getCnicClientByCnicNumber,
+  updateCnic,
 } = require("../controller/servicesController/cnicController");
 
 const upload = require("../middleware/upload");
+const {
+  createPassport,
+} = require("../controller/servicesController/passportController");
 
 const router = express.Router();
 
 router.post(
-    "/cnic",
+  "/cnic",
   upload.fields([
     { name: "frontPicture", maxCount: 1 },
     { name: "backPicture", maxCount: 1 },
-
   ]),
   createCnic
 );
 
-router.get("/getAllCnic" ,getAllClientWithCnic)
-router.post("/getClientCnicNumber" ,getCnicClientByCnicNumber)
+router.get("/getAllCnic", getAllClientWithCnic);
+router.post("/getClientCnicNumber", getCnicClientByCnicNumber);
+
+router.put(
+  "/cnic/:cnicID",
+  upload.fields([
+    { name: "frontPicture", maxCount: 1 },
+    { name: "backPicture", maxCount: 1 },
+  ]),
+  updateCnic
+);
+
+// passport router
+
+
+router.post(
+  "/passport",
+  upload.fields([
+    { name: "cnicFrontPic", maxCount: 1 },
+    { name: "cnicBackPic", maxCount: 1 },
+    { name: "degreePicture", maxCount: 1 },
+  ]),
+  createPassport
+);
 
 module.exports = router;

@@ -1,177 +1,199 @@
+const cnicModel = require("../../models/cnic");
 
-const cnicModel = require("../../models/cnic")
+const cloudinary = require("../../config/cloudinary");
+const UserModel = require("../../models/users");
 
-    const cloudinary = require("../../config/cloudinary")
-const UserModel = require("../../models/users")
+const createCnic = async (req, res) => {
+  try {
+    const { clientID } = req.body;
 
-
-    const createCnic= async(req, res) =>{
-        try {
-            
-        const { clientID  }  = req.body
-
-        if(!clientID){
-            return res.status(400).json({
-                success:false,
-                message:" required Client id"
-            })
-        }
-        
-        
-        const frontPicture = req.files?.frontPicture?.[0]
-        const backPicture = req.files?.backPicture?.[0]
-
-
-    let  frontUrl="";
-    let  backUrl="";
-
-    if(frontPicture){
-    const uploadfrontUrl = await  cloudinary.uploader.upload(
-            frontPicture.path,
-            {folder:"Cnic"}
-        )
-        frontUrl = uploadfrontUrl.secure_url
-    }
-
-    if(backPicture){
-    const uploadBackUrl = await  cloudinary.uploader.upload(
-            backPicture.path,
-            {folder:"Cnic"}
-        )
-        backUrl = uploadBackUrl.secure_url
-    }
-
-
-
-
-    const cnic= await cnicModel.create({
-        clientID,
-        fatherCnicPicBack:backUrl,
-        fatherCnicPicFront:frontUrl
-    })
-    return res.status(200).json({
-        success:true,
-        message:"data recived for new cnic",
-        data:cnic
-    })
-
-
-
-
-
-        } catch (error) {
-            return  res.status(500).json({
-                success:false,
-                message:"something went wrong",
-                data:null
-            
-            })
-        }
-    }
-
-
-
-    const   getAllClientWithCnic = async (req , res)=>{
-
-    try {
-        
-    const data  = await  cnicModel.find().populate("clientID")
-
-    if(!data){
-
-        return res.status(400).json({
-            success:false,
-            data:null,
-            message:"not getting data",  
-        })
-    }
-
-    return res.status(200).json({
-        success:true,
-        num:data.length,
-        data:data,
-    })
-
-    } catch (error) {
-        
-
-        return res.status(500).json({
-            success:false,
-            message:error.message,
-            data:null
-        })
-        
-    }
-
-
-
-    } 
-
-
-
-
-const getCnicClientByCnicNumber =  async (req  , res)=>{
-try {
-    
-    const {cnic} =  req.body 
-    if(!cnic){
-        return res.status(400).json({
-            success:false,
-            message:"cnic number required"
-        })
-    } 
-
-const user  = await  UserModel.findOne({cnic})
-
-if(!user){
-    return res.status(400).json({
-        message:"client not found with this cnic number",
-        data:null,
-        success:false
-
-    })
-}
-
-
-
-const cnicData = await cnicModel.findOne({clientID : user._id}).populate("clientID")
-
-if(!cnicData){
-    return res.status(400).json({
+    if (!clientID) {
+      return res.status(400).json({
         success: false,
-        data:null,
-        message:"Data not found"
-    })
-}
+        message: " required Client id",
+      });
+    }
 
+    const frontPicture = req.files?.frontPicture?.[0];
+    const backPicture = req.files?.backPicture?.[0];
 
+    let frontUrl = "";
+    let backUrl = "";
 
-return res.status(200).json({
-    success:true,
-    message:"complete client data   received",
-    data:cnicData,
+    if (frontPicture) {
+      const uploadfrontUrl = await cloudinary.uploader.upload(
+        frontPicture.path,
+        { folder: "Cnic" }
+      );
+      frontUrl = uploadfrontUrl.secure_url;
+    }
 
-})
+    if (backPicture) {
+      const uploadBackUrl = await cloudinary.uploader.upload(backPicture.path, {
+        folder: "Cnic",
+      });
+      backUrl = uploadBackUrl.secure_url;
+    }
 
+    const cnic = await cnicModel.create({
+      clientID,
+      fatherCnicPicBack: backUrl,
+      fatherCnicPicFront: frontUrl,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "data recived for new cnic",
+      data: cnic,
+      id: cnic.id,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "something went wrong",
+      data: null,
+    });
+  }
+};
 
-} catch (error) {
-    
-     res.status(500).json({
-    success:false,
-    message:error.message,
-    data:null,
+const getAllClientWithCnic = async (req, res) => {
+  try {
+    const data = await cnicModel.find().populate("clientID");
 
-})
-}
+    if (!data) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "not getting data",
+      });
+    }
 
-}
+    return res.status(200).json({
+      success: true,
+      num: data.length,
+      data: data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  }
+};
 
+const getCnicClientByCnicNumber = async (req, res) => {
+  try {
+    const { cnic } = req.body;
+    if (!cnic) {
+      return res.status(400).json({
+        success: false,
+        message: "cnic number required",
+      });
+    }
 
+    const user = await UserModel.findOne({ cnic });
 
+    if (!user) {
+      return res.status(400).json({
+        message: "client not found with this cnic number",
+        data: null,
+        success: false,
+      });
+    }
 
+    const cnicData = await cnicModel
+      .findOne({ clientID: user._id })
+      .populate("clientID");
 
+    if (!cnicData) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        message: "Data not found",
+      });
+    }
 
+    return res.status(200).json({
+      success: true,
+      message: "complete client data   received",
+      data: cnicData,
+      id: cnicData.id,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  }
+};
 
+const updateCnic = async (req, res) => {
+  try {
+    const { cnicID } = req.params;
 
+    if (!cnicID) {
+      return res.status(400).json({
+        message: "required cnic id",
+        data: null,
+        success: false,
+      });
+    }
 
-    module.exports = {createCnic ,  getAllClientWithCnic  ,getCnicClientByCnicNumber }
+    const frontPicture = req.files?.frontPicture?.[0];
+    const backPicture = req.files?.backPicture?.[0];
+
+    const updateData = {};
+
+    if (frontPicture) {
+      const uploadFront = await cloudinary.uploader.upload(frontPicture.path, {
+        folder: "Cnic",
+      });
+
+      updateData.fatherCnicPicFront = uploadFront.secure_url;
+    }
+
+    if (backPicture) {
+      const uploadBack = await cloudinary.uploader.upload(backPicture.path, {
+        folder: "Cnic",
+      });
+      updateData.backPicture = uploadBack.secure_url;
+    }
+
+    if (req.body.clientID) {
+      updateData.clientID = req.body.clientID;
+    }
+
+    const updateCnic = await cnicModel.findByIdAndUpdate(cnicID, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updateCnic) {
+      return res.status(400).json({
+        message: "cnic record not found",
+        success: false,
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      message: "success fully updated",
+      data: updateCnic,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+      data: null,
+    });
+  }
+};
+
+module.exports = {
+  createCnic,
+  getAllClientWithCnic,
+  getCnicClientByCnicNumber,
+  updateCnic
+};
