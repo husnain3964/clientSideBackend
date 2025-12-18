@@ -9,6 +9,8 @@ const {
 const upload = require("../middleware/upload");
 const {
   createPassport,
+  getAllPassportApplication,
+  getPassportclientByCnic,
 } = require("../controller/servicesController/passportController");
 
 const router = express.Router();
@@ -47,4 +49,7 @@ router.post(
   createPassport
 );
 
+
+router.get("/allPassport" , getAllPassportApplication)
+router.post("/PassportByCnic" ,getPassportclientByCnic)
 module.exports = router;

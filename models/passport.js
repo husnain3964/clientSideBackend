@@ -10,17 +10,17 @@ const  passportSchema=new mongoose.Schema({
     },
 
 
-   cnicFrontPic:{
+   cnicFrontURL:{
     type:String,
     required:false
    },
 
-   cnicBackPic:{
+   cnicBackURL:{
     type:String,
     required:false
    },
 
-   degreePicture:{
+   degreePictureURL:{
     type:String,
     required:false
    },
