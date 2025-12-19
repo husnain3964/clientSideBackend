@@ -11,6 +11,7 @@ const {
   createPassport,
   getAllPassportApplication,
   getPassportclientByCnic,
+  updatePassportdetailById,
 } = require("../controller/servicesController/passportController");
 
 const router = express.Router();
@@ -52,4 +53,13 @@ router.post(
 
 router.get("/allPassport" , getAllPassportApplication)
 router.post("/PassportByCnic" ,getPassportclientByCnic)
+
+
+
+router.put("/passportUpdate/:id" , upload.fields([
+    {name :"cnicFrontPic", maxCount:1},
+    {name :"cnicBackPic", maxCount:1},
+    {name :"degreePicture", maxCount:1}
+]), updatePassportdetailById)
+
 module.exports = router;

@@ -115,9 +115,9 @@ const getAllPassportApplication = async (req, res) => {
 // get passport client by cnic  api work start
 
 const getPassportclientByCnic = async (req, res) => {
-    try {
-        const { cnic } = req.body;
-
+  try {
+    const { cnic } = req.body;
+    
     if (!cnic) {
       return res.status(400).json({
         success: false,
@@ -153,13 +153,91 @@ const getPassportclientByCnic = async (req, res) => {
       data: null,
       message: error.message,
     });
-}
+  }
 };
 // get passport client by cnic  api completed
 
+//update passport APIs started from here
+const updatePassportdetailById = async (req, res) => {
+  const { id } = req.params;
+  
+  
+  if (!id) {
+    return res.status(400).json({
+      message: "id required for update",
+      success: null,
+      data: null,
+    });
+  }
 
-//                                              y  continue    
-//  complete passport APIs   70% 
+
+  const passportData =await passportModel.findOne({_id:id});
+  try {
+    if (!passportData) {
+      return res.status(400).json({
+        message: `passport data not found with this ID ${id}`,
+        success: false,
+      });
+    }
+
+    const UpdatePassportData = {};
+
+    const cnicFront = req.files?.cnicFrontPic?.[0];
+    const cnicBack = req.files?.cnicBackPic?.[0];
+    const degreePicture = req.files?.degreePicture?.[0];
+
+    if (cnicFront) {
+      const uploadFront = await cloudinary.uploader.upload(cnicFront.path, {
+        folder: "docPicForPassport",
+      });
+
+      UpdatePassportData.cnicFrontURL = uploadFront.secure_url;
+    }
+
+    if (cnicBack) {
+      const uploadBack = await cloudinary.uploader.upload(cnicBack.path, {
+        folder: "docPicForPassport",
+      });
+      UpdatePassportData.cnicBackURL = uploadBack.secure_url;
+    }
+
+    if (degreePicture) {
+      const uploadDegree = await cloudinary.uploader.upload(degreePicture.path, {
+        folder: "docPicForPassport",
+      });
+      UpdatePassportData.degreePictureURL = uploadDegree.secure_url;
+    }
+
+    if (req.body.clientID) {
+      UpdatePassportData.clientID = req.body.clientID;
+    }
+    
+    const updatePassport = await passportModel.findByIdAndUpdate(
+      id,
+      UpdatePassportData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "successfully update passport data",
+      data: updatePassport,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+      data: null,
+    });
+  }
+};  
+//update passport APIs completed
+
+
+//  complete passport APIs   70%
 // We need to add more passport clients
 // Check the "Get All Clients" APIs
 // Check the "Get Passport Client by CNIC Number" API
@@ -169,4 +247,5 @@ module.exports = {
   createPassport,
   getAllPassportApplication,
   getPassportclientByCnic,
+  updatePassportdetailById,
 };
