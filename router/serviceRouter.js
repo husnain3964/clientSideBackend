@@ -13,6 +13,7 @@ const {
   getPassportclientByCnic,
   updatePassportdetailById,
 } = require("../controller/servicesController/passportController");
+const { createBform } = require("../controller/servicesController/bFormController");
 
 const router = express.Router();
 
@@ -61,5 +62,18 @@ router.put("/passportUpdate/:id" , upload.fields([
     {name :"cnicBackPic", maxCount:1},
     {name :"degreePicture", maxCount:1}
 ]), updatePassportdetailById)
+
+
+
+// /////////////////////////////////////////BFORM
+
+router.post("/Bform" , upload.fields(
+  [
+    {name: "fatherCnicFrontPic" , maxCount:1 },
+    {name: "fatherCnicBackPic" , maxCount:1 },
+    {name: "motherCnicFrontPic" , maxCount:1 },
+    {name: "motherCnicBackPic" , maxCount:1 },
+  ]
+),  createBform)
 
 module.exports = router;
