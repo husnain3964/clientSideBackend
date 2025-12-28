@@ -13,7 +13,13 @@ const {
   getPassportclientByCnic,
   updatePassportdetailById,
 } = require("../controller/servicesController/passportController");
-const { createBform } = require("../controller/servicesController/bFormController");
+const {
+  createBform,
+  getBFormClientByCnicNumber,
+  getAllBformClient,
+  bFormCLientDataDeleteByCnic,
+  updateBformClientfromId,
+} = require("../controller/servicesController/bFormController");
 
 const router = express.Router();
 
@@ -40,7 +46,6 @@ router.put(
 
 // passport router
 
-
 router.post(
   "/passport",
   upload.fields([
@@ -51,29 +56,45 @@ router.post(
   createPassport
 );
 
+router.get("/allPassport", getAllPassportApplication);
+router.post("/PassportByCnic", getPassportclientByCnic);
 
-router.get("/allPassport" , getAllPassportApplication)
-router.post("/PassportByCnic" ,getPassportclientByCnic)
-
-
-
-router.put("/passportUpdate/:id" , upload.fields([
-    {name :"cnicFrontPic", maxCount:1},
-    {name :"cnicBackPic", maxCount:1},
-    {name :"degreePicture", maxCount:1}
-]), updatePassportdetailById)
-
-
+router.put(
+  "/passportUpdate/:id",
+  upload.fields([
+    { name: "cnicFrontPic", maxCount: 1 },
+    { name: "cnicBackPic", maxCount: 1 },
+    { name: "degreePicture", maxCount: 1 },
+  ]),
+  updatePassportdetailById
+);
 
 // /////////////////////////////////////////BFORM
 
-router.post("/Bform" , upload.fields(
-  [
-    {name: "fatherCnicFrontPic" , maxCount:1 },
-    {name: "fatherCnicBackPic" , maxCount:1 },
-    {name: "motherCnicFrontPic" , maxCount:1 },
-    {name: "motherCnicBackPic" , maxCount:1 },
-  ]
-),  createBform)
+router.post(
+  "/Bform",
+  upload.fields([
+    { name: "fatherCnicFrontPic", maxCount: 1 },
+    { name: "fatherCnicBackPic", maxCount: 1 },
+    { name: "motherCnicFrontPic", maxCount: 1 },
+    { name: "motherCnicBackPic", maxCount: 1 },
+  ]),
+  createBform
+);
+
+router.post("/getbForm", getBFormClientByCnicNumber);
+router.get("/AllbForm", getAllBformClient);
+router.get("/deletebForm", bFormCLientDataDeleteByCnic);
+
+router.put(
+  "/updatebForm/:id",
+  upload.fields([
+    { name: "fatherCnicFrontPic", maxCount: 1 },
+    { name: "fatherCnicBackPic", maxCount: 1 },
+    { name: "motherCnicFrontPic", maxCount: 1 },
+    { name: "motherCnicBackPic", maxCount: 1 },
+  ]),
+  updateBformClientfromId
+);
 
 module.exports = router;
