@@ -1,26 +1,27 @@
-const serviceModel = require("../../models/servicesHistory")
+const serviceModel = require("../../models/servicesHistory");
 
-const  UserModel=require('../../models/users')
-const cnicModel=require('../../models/cnic')
-const serviceModel = require("../../models/servicesHistory")
+const UserModel = require("../../models/users");
+const cnicModel = require("../../models/cnic");
+const serviceModel = require("../../models/servicesHistory");
 
+const getClientWithService = async (req, res) => {
+  const { email, cnic } = req.body;
 
-const getClientWithService = async(req ,res)=>{
+  let client = null;
 
+  if (email) {
+    client = await UserModel.findOne({ email });
+  }
 
-    const {email , cnic} = req.body;
-     
+  if (!client && cnic) client = await UserModel.findOne({ cnic });
+};
 
- let client=null;
-
-
- if(email){
-    client = await  UserModel.findOne({email})
-    
- };
-
- if(!client && cnic)
-   
-    client
-
+if (!client) {
+  return res.status(400).json({
+    success: false,
+    message: "client not found with this email and cnic",
+    data: null,
+  });
 }
+
+module.exports = { getClientWithService };

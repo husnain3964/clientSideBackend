@@ -20,6 +20,7 @@ const {
   bFormCLientDataDeleteByCnic,
   updateBformClientfromId,
 } = require("../controller/servicesController/bFormController");
+const { getVehicleData, updateVehicleData } = require("../controller/servicesController/vehicleController");
 
 const router = express.Router();
 
@@ -96,5 +97,15 @@ router.put(
   ]),
   updateBformClientfromId
 );
+
+
+
+// vehicle routing 
+
+
+router.post('/createVehicleRegistration' , getVehicleData)
+
+router.put("/updateVehicleData" , updateVehicleData )
+
 
 module.exports = router;
