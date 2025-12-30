@@ -1,3 +1,4 @@
+const UserModel = require("../../models/users");
 const vehicleModel = require("../../models/vehicleRegistration");
 
 const getVehicleData = async (req, res) => {
@@ -60,7 +61,7 @@ const getVehicleData = async (req, res) => {
 
 // get vehicle data completed
 
-//  update vehicle data 
+//  update vehicle data
 
 const updateVehicleData = async (req, res) => {
   try {
@@ -130,13 +131,132 @@ const updateVehicleData = async (req, res) => {
     });
   }
 };
-//  updated vehicle data completed 
+//  updated vehicle data completed
+
+const deleteVehileDataByCnic = async (req, res) => {
+  try {
+    const { cnic } = req.body;
+    if (!cnic) {
+      return res.status(400).json({
+        success: false,
+        message: "cnic number required",
+      });
+    }
+
+    const client = await UserModel.findOne({ cnic });
+
+    if (!client) {
+      return res.status(400).json({
+        success: false,
+        message: "client not found with this cnic",
+      });
+    }
+
+    console.log(client._id);
+    const deleteVehicleData = await vehicleModel.findOneAndDelete({
+      clientId: client._id,
+    });
+
+    if (!deleteVehicleData) {
+      return res.status(400).json({
+        message: "something went wrong",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "successfully deleted  this veicle data",
+      data: deleteVehicleData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// delete api completed
+
+//get all vehicle data with client
+const getAllVehicleData = async (req, res) => {
+  try {
+    const getVehicleData = await vehicleModel.find().populate("clientId");
+
+    return res.status(200).json({
+      success: true,
+      message: "succes fully got data",
+      data: getVehicleData,
+      count: getVehicleData.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  }
+};
+
+// getAllvehicleData APIs completed
+
+// getvehicledatabycnic
+const getVehicleDataByCnic = async (req, res) => {
+  try {
+    const { cnic } = req.body;
+    if (!cnic) {
+      return res.status(400).json({
+        message: " ERROR!  cnic number must be required",
+      });
+    }
+
+    const findClientbyCnic = await UserModel.findOne({ cnic });
+    if (!findClientbyCnic) {
+      return res.status(400).json({
+        message: "ERROR! client not found with this cnic number",
+      });
+    }
+
+    const gettingSingleVehicleData = await vehicleModel
+      .findOne({
+        clientId: findClientbyCnic._id,
+      })
+      .populate("clientId");
+      
+  if(!gettingSingleVehicleData){
+    return res.status(400).json({
+      message:"ERROR! data not found with this clientID"
+    })
+  }
+
+      return res.status(200).json({
+        success:true,
+        message:"successfully got data",
+        data:gettingSingleVehicleData
+      })
+
+  } catch (error) {
+    return res.status(500).json({
+      success:false,
+      message:error.message
+    })
+  }
+};
 
 //  created vehicle registration schema linked with client ID
 //  implemented create and update vehicle registration APIs
 // verified both APIs are working correctly
-//  delete and get-all APIs pending
+//  delete APi completed!
+//  getAllVehicleData  API completed!
+//  getvehicleDataBycnic  completed !
+    
+//   vehicle rigistration  CRUD completed!
 
-
-
-module.exports = { getVehicleData, updateVehicleData };
+module.exports = {
+  getVehicleData,
+  updateVehicleData,
+  deleteVehileDataByCnic,
+  getAllVehicleData,
+  getVehicleDataByCnic
+};
