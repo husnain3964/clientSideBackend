@@ -21,6 +21,7 @@ const {
   updateBformClientfromId,
 } = require("../controller/servicesController/bFormController");
 const { updateVehicleData, deleteVehileDataByCnic, getAllVehicleData, getVehicleData, getVehicleDataByCnic } = require("../controller/servicesController/vehicleController");
+const { createDrivingLicense } = require("../controller/servicesController/drivingLicense.controller");
 
 const router = express.Router();
 
@@ -112,5 +113,12 @@ router.delete('/deleteVehicle', deleteVehileDataByCnic)
 router.get("/getVehicleData" , getAllVehicleData)
 
 router.get('/vehicleDataByCnic' ,  getVehicleDataByCnic)
+
+
+
+
+// driving license  routing
+
+router.post("/driLicense"  , createDrivingLicense)
 
 module.exports = router;

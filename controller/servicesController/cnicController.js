@@ -2,6 +2,7 @@ const cnicModel = require("../../models/cnic");
 
 const cloudinary = require("../../config/cloudinary");
 const UserModel = require("../../models/users");
+const serviceModel = require("../../models/servicesHistory");
 
 const createCnic = async (req, res) => {
   try {
@@ -40,6 +41,12 @@ const createCnic = async (req, res) => {
       fatherCnicPicBack: backUrl,
       fatherCnicPicFront: frontUrl,
     });
+
+    await serviceModel.create({
+      clientId:cnic.clientID,
+      serviceType:"PASSPORT",
+      serviceRefId:cnic._id
+    })
     return res.status(200).json({
       success: true,
       message: "data recived for new cnic",

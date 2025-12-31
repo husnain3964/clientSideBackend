@@ -246,7 +246,7 @@ const getVehicleDataByCnic = async (req, res) => {
 
 //  created vehicle registration schema linked with client ID
 //  implemented create and update vehicle registration APIs
-// verified both APIs are working correctly
+//  verified both APIs are working correctly
 //  delete APi completed!
 //  getAllVehicleData  API completed!
 //  getvehicleDataBycnic  completed !
